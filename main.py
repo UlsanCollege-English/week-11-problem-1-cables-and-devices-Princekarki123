@@ -1,6 +1,3 @@
-
-## main.py
-```python
 """
 HW01 — Cables and Devices
 
@@ -16,37 +13,51 @@ def build_graph(edges, directed=False):
 
     edges: list of (u, v) pairs.
     directed: if True, add only u->v; if False, add both u->v and v->u.
-
-    TODO (8 Steps):
-    1) Read & Understand: what is an edge here?
-    2) Re-phrase: say the goal in your own words.
-    3) Identify I/O: define input and output shapes.
-    4) Break down: plan a loop that builds the dict; handle new keys.
-    5) Pseudocode: write steps in comments above your code.
-    6) Write the code.
-    7) Debug: print and check small cases (do this locally).
-    8) Optimize: write big-O in README.
     """
-    raise NotImplementedError
+    # Pseudocode:
+    # 1. Create empty dictionary: graph = {}
+    # 2. Loop over each (u, v) in edges
+    # 3. If u not in graph, add graph[u] = []
+    # 4. Append v to graph[u]
+    # 5. If undirected: also add v->u (same process)
+    graph = {}
+
+    for u, v in edges:
+        if u not in graph:
+            graph[u] = []
+        graph[u].append(v)
+
+        # Ensure the target node exists in the graph even for directed graphs.
+        # For directed graphs this will leave an empty neighbor list for v;
+        # for undirected graphs we then add the reverse edge.
+        if v not in graph:
+            graph[v] = []
+
+        if not directed:
+            graph[v].append(u)
+
+    return graph
 
 
 def degree_dict(graph):
     """Return a dictionary: node -> degree (number of neighbors).
 
-    For directed graphs built with directed=True, this is out-degree.
-    For undirected graphs, this equals the usual degree.
-
-    TODO: implement after you finish build_graph.
+    For directed graphs: out-degree.
+    For undirected graphs: standard degree.
     """
-    raise NotImplementedError
+    degrees = {}
+    for node in graph:
+        degrees[node] = len(graph[node])
+    return degrees
 
 
 if __name__ == "__main__":
     # Optional manual check
-    sample = [('PC1','SW1'), ('SW1','PR1'), ('PR1','PC2')]
+    sample = [('PC1', 'SW1'), ('SW1', 'PR1'), ('PR1', 'PC2')]
     print("Sample edges:", sample)
-    # Fill in calls below after you implement functions
-    # g = build_graph(sample, directed=False)
-    # print("Graph:", g)
-    # print("Degrees:", degree_dict(g))
-    pass
+
+    g = build_graph(sample, directed=False)
+    print("Graph:", g)
+
+    d = degree_dict(g)
+    print("Degrees:", d)
